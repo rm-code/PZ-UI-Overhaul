@@ -1,5 +1,5 @@
-local maxW = getCore():getScreenWidth();
-local maxH = getCore():getScreenHeight();
+local MAX_X = getCore():getScreenWidth();
+local MAX_Y = getCore():getScreenHeight();
 
 BaseElement = {};
 
@@ -7,8 +7,7 @@ function BaseElement.new(x, y, w, h)
     local self = {};
 
     -- Clamp the position values so the UI can't be moved offscreen.
-    x = math.max(0, math.min(x, maxW - w));
-    y = math.max(0, math.min(y, maxH - h));
+    self:setPosition(x, y);
 
     -- Create a java instance.
     local jObj = UIElement.new(self);
@@ -20,6 +19,14 @@ function BaseElement.new(x, y, w, h)
     jObj:setAnchorRight(false);
     jObj:setAnchorTop(false);
     jObj:setAnchorBottom(false);
+
+    -- ------------------------------------------------
+    -- Local Functions
+    -- ------------------------------------------------
+
+    local function clamp(min, val, max)
+        return math.max(min, math.min(val, max));
+    end
 
     -- ------------------------------------------------
     -- Public Functions
@@ -40,12 +47,54 @@ function BaseElement.new(x, y, w, h)
         end
     end
 
+    function self:close()
+        self:setVisible(false);
+        UIManager.RemoveElement(jObj);
+    end
+
+    function self:toggle()
+        self:setVisible(not jObj:isVisible());
+    end
+
+    -- ------------------------------------------------
+    -- Setters
+    -- ------------------------------------------------
+
     function self:setVisible(nv)
         jObj:setVisible(nv);
     end
 
-    function self:toggle()
-        jObj:setVisible(not jObj:isVisible());
+    -- ------------------------------------------------
+    -- Getters
+    -- ------------------------------------------------
+
+    function self:isVisible()
+        return jObj:isVisible();
+    end
+
+    function self:getX()
+        return x;
+    end
+
+    function self:getY()
+        return y;
+    end
+
+    function self:getPosition()
+        return x, y;
+    end
+
+    function self:setX(nx)
+        x = clamp(0, nx + w, MAX_X);
+    end
+
+    function self:setY(ny)
+        y = clamp(0, ny + h, MAX_Y);
+    end
+
+    function self:setPosition(nx, ny)
+        x = clamp(0, nx + w, MAX_X);
+        y = clamp(0, ny + h, MAX_Y);
     end
 
     return self;
