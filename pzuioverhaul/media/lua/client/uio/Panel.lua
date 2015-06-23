@@ -1,4 +1,4 @@
-require 'ui/BaseElement'
+require 'uio/BaseElement'
 
 UIO.Panel = {};
 
