@@ -12,11 +12,11 @@ function UIO.BaseElement.new(px, py, pw, ph)
 	local child = nil;
 	local children = {};
 	local ID = maxID + 1;
+	maxID = ID;
 	local x = px;
 	local y = py;
 	local w = pw;
 	local h = ph;
-	maxID = ID;
 
 	-- ------------------------------------------------
 	-- Local Functions
@@ -135,6 +135,18 @@ function UIO.BaseElement.new(px, py, pw, ph)
 		jObj:setY(y);
 	end
 	-- }}}
+	function self:setWidth(nw) -- {{{
+		w = nw;
+		jObj:setWidth(w);
+		self:setX(x);
+	end
+	-- }}}
+	function self:setHeight(nh) -- {{{
+		h = nh;
+		jObj:setHeight(h);
+		self:setY(h);
+	end
+	-- }}}
 	function self:setPosition(nx, ny) -- {{{
 		x = clamp(0, nx, MAX_X - w);
 		jObj:setX(x);
@@ -165,6 +177,14 @@ function UIO.BaseElement.new(px, py, pw, ph)
 		return y;
 	end
 	-- }}}
+	function self:getWidth() -- {{{
+		return w;
+	end
+	-- }}}
+	function self:getHeight() -- {{{
+		return h;
+	end
+	-- }}}
 	function self:getPosition() -- {{{
 		return x, y;
 	end
@@ -177,10 +197,10 @@ function UIO.BaseElement.new(px, py, pw, ph)
 	-- Create a java instance.
 	jObj = UIElement.new(self);
 	-- Clamp the position values so the UI can't be moved offscreen.
-	self:setPosition(x, y);
+	self:setPosition(x, y); -- also sets it on jObj
+	self:setWidth(w);
+	self:setHeight(h);
 
-	jObj:setWidth(w);
-	jObj:setHeight(h);
 	jObj:setAnchorLeft(false);
 	jObj:setAnchorRight(false);
 	jObj:setAnchorTop(false);
