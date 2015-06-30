@@ -12,7 +12,7 @@ function UIO.BaseElement.new(px, py, pw, ph)
 	UIO.maxID = ID;
 
 	local borderColor = {r=0.4, g=0.4, b=0.4, a=1};
-	local backgroundColor = {r=0, g=0, b=0, a=0.8};
+	local backgroundColor = {r=0.1, g=0.1, b=0.1, a=0.5};
 	local joyPadFocus = nil;
 
 	local MIN_X = -1;
