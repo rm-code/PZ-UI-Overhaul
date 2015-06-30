@@ -13,6 +13,8 @@ function UIO.BaseElement.new(px, py, pw, ph)
 
 	local borderColor = {r=0.4, g=0.4, b=0.4, a=1};
 	local backgroundColor = {r=0, g=0, b=0, a=0.8};
+	local joyPadFocus = nil;
+
 	local MIN_X = -1;
 	local MIN_Y = -1;
 	local MAX_X = -1; --getCore():getScreenWidth();
@@ -139,6 +141,32 @@ function UIO.BaseElement.new(px, py, pw, ph)
 	function self:onMouseMoveOutside(mX, mY) -- {{{
 		if parent then return parent:onMouseMoveOutside(mX, mY) end
 		return false;
+	end
+	-- }}}
+	-- ------------------------------------------------
+	-- Joypad Functions -- TODO
+	-- ------------------------------------------------
+	function self:onLoseJoypadFocus(joypadData) -- {{{
+		joyPadFocus = nil;
+	end
+	-- }}}
+	function self:onGainJoypadFocus(joypadData) -- {{{
+		joyPadFocus = joypadData;
+	end
+	-- }}}
+	function self:onJoypadDown(button) -- {{{
+	end
+	-- }}}
+	function self:onJoypadDirUp() -- {{{
+	end
+	-- }}}
+	function self:onJoypadDirDown() -- {{{
+	end
+	-- }}}
+	function self:onJoypadDirLeft() -- {{{
+	end
+	-- }}}
+	function self:onJoypadDirRight() -- {{{
 	end
 	-- }}}
 	-- ------------------------------------------------
