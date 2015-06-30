@@ -1,18 +1,4 @@
 require 'uio/BaseElement'
--- TODO These MUST go elsewhere TODO
-if table.pack == nil then 
-	table.pack = function(...)
-		return { n = select("#", ...), ... }
-	end
-end
-if table.unpack == nil then
-	table.unpack = function(t, i)
-		i = i or 1;
-		if t[i] then
-			return t[i], unpack(t, i + 1)
-		end
-	end
-end
 
 UIO.Button = {};
 
