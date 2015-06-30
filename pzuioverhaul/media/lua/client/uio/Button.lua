@@ -24,10 +24,16 @@ function UIO.Button.new(x, y, w, h)
 	local onClick = nil;
 	local arguments = nil;
 	local textColor = {r=1, g=1, b=1, a=1};
+	local mouseDownBackgroundColor = {r=0.15, g=0.15, b=0.15, a=1.0};
+	local isMouseDown = false;
 
 	function self:prerender() -- {{{
 		if self:isMouseOver() then
-			self:drawRectangle('fill', 0, 0, w, h, self:getMouseOverBackgroundColor());
+			if isMouseDown then
+				self:drawRectangle('fill', 0, 0, w, h, mouseDownBackgroundColor);
+			else
+				self:drawRectangle('fill', 0, 0, w, h, self:getMouseOverBackgroundColor());
+			end
 		else
 			self:drawRectangle('fill', 0, 0, w, h, self:getBackgroundColor());
 		end
@@ -54,7 +60,24 @@ function UIO.Button.new(x, y, w, h)
 	end
 	-- }}}
 	function self:onMouseUp(mX, mY) -- {{{
-		return onClick(table.unpack(arguments));
+		local doCb = isMouseDown and self:isMouseOver();
+		isMouseDown = false;
+
+		if doCb then
+			onClick(table.unpack(arguments));
+		end
+		return true;
+	end
+	-- }}}
+	function self:onMouseDown(mX, mY) -- {{{
+		isMouseDown = true;
+		return true;
+	end
+	-- }}}
+	function self:onMouseUpOutside(mX, mY) -- {{{
+		isMouseDown = false;
+		if parent then return parent:onMouseUpOutside(mX, mY) end
+		return false;
 	end
 	-- }}}
 
