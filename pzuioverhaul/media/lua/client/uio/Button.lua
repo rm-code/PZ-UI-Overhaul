@@ -64,7 +64,9 @@ function UIO.Button.new(x, y, w, h)
 		isMouseDown = false;
 
 		if doCb then
-			onClick(table.unpack(arguments));
+			if onClick then
+				onClick(table.unpack(arguments));
+			end
 		end
 		return true;
 	end
