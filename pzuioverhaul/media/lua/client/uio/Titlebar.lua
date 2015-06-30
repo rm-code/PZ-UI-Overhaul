@@ -22,5 +22,7 @@ function UIO.Titlebar.new(x, y, w, h)
 		self:drawTextCentered(title, self:getWidth() / 2, 1, textColor);
 	end
 
+	self:setBackgroundColorRGBA(0, 0, 0, 0.8);
+	self:setBorderColorRGBA(0.4, 0.4, 0.4, 1);
 	return self;
 end
