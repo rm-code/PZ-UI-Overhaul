@@ -1,18 +1,22 @@
-local MAX_X = getCore():getScreenWidth();
-local MAX_Y = getCore():getScreenHeight();
-local maxID = -1;
 
 UIO = {};
+UIO.maxID = -1;
 UIO.BaseElement = {};
 
 function UIO.BaseElement.new(px, py, pw, ph)
 	local self = {};
 	local jObj = {};
 	local parent = nil;
-	local child = nil;
 	local children = {};
-	local ID = maxID + 1;
-	maxID = ID;
+	local ID = UIO.maxID + 1;
+	UIO.maxID = ID;
+
+	local borderColor = {r=0.4, g=0.4, b=0.4, a=1};
+	local backgroundColor = {r=0, g=0, b=0, a=0.8};
+	local MIN_X = -1;
+	local MIN_Y = -1;
+	local MAX_X = -1; --getCore():getScreenWidth();
+	local MAX_Y = -1; --getCore():getScreenHeight();
 	local x = px;
 	local y = py;
 	local w = pw;
@@ -43,6 +47,26 @@ function UIO.BaseElement.new(px, py, pw, ph)
 		end
 	end
 	-- }}}
+	function self:drawTextCentered(text, x, y, color, font) -- {{{ draw text centered horizontally
+		jObj:DrawTextCentre(font or UIFont.Small, text, x, y, color.r, color.g, color.b, color.a);
+	end
+	-- }}}
+	function self:drawTexture(texture, x, y) -- {{{
+		jObj:DrawTexture(texture, x, y, 1);
+	end
+	-- }}}
+	function self:drawTextureTinted(texture, x, y, color) -- {{{
+		jObj:DrawTextureColor(texture, x, y, color.r, color.g, color.b, color.a);
+	end
+	-- }}}
+	function self:drawTextureScaled(texture, x, y, w, h) -- {{{
+		jObj:DrawTextureScaled(texture, x, y, w, h, 1);
+	end
+	-- }}}
+	function self:drawTextureScaledTinted(texture, x, y, w, h, color) -- {{{
+		jObj:DrawTextureScaledColor(texture, x, y, w, h, color.r, color.g, color.b, color.a);
+	end
+	-- }}}
 	function self:close() -- {{{ remove window from UI Manager
 		self:setVisible(false);
 		UIManager.RemoveElement(jObj);
@@ -58,9 +82,8 @@ function UIO.BaseElement.new(px, py, pw, ph)
 	-- }}}
 	function self:addChild(o) -- {{{
 		children[o:getID()] = o;
-		child = o;
-		child:setParent(self);
-		child:_addAsChildTo(jObj); -- required to keep objects private
+		o:setParent(self);
+		o:_addAsChildTo(jObj); -- required to keep objects private
 	end
 	-- }}}
 	function self:onMouseDown(mX, mY) -- {{{
@@ -125,13 +148,37 @@ function UIO.BaseElement.new(px, py, pw, ph)
 		jObj:setVisible(nv);
 	end
 	-- }}}
+	function self:setMinX(mx) -- {{{
+		MIN_X = mx;
+	end
+	-- }}}
+	function self:setMaxX(mx) -- {{{
+		MAX_X = mx;
+	end
+	-- }}}
+	function self:setMinY(my) -- {{{
+		MIN_Y = my;
+	end
+	-- }}}
+	function self:setMaxY(my) -- {{{
+		MAX_Y = my;
+	end
+	-- }}}
 	function self:setX(nx) -- {{{
-		x = clamp(0, nx, MAX_X - w);
+		if MIN_X > -1 and MAX_X > -1 then
+			x = clamp(MIN_X, nx, MAX_X - w);
+		else
+			x = nx;
+		end
 		jObj:setX(x);
 	end
 	-- }}}
 	function self:setY(ny) -- {{{
-		y = clamp(0, ny, MAX_Y - h);
+		if MIN_Y > -1 and MAX_Y > -1 then
+			y = clamp(MIN_Y, ny, MAX_Y - h);
+		else
+			y = ny;
+		end
 		jObj:setY(y);
 	end
 	-- }}}
@@ -144,18 +191,44 @@ function UIO.BaseElement.new(px, py, pw, ph)
 	function self:setHeight(nh) -- {{{
 		h = nh;
 		jObj:setHeight(h);
-		self:setY(h);
+		self:setY(y);
 	end
 	-- }}}
 	function self:setPosition(nx, ny) -- {{{
-		x = clamp(0, nx, MAX_X - w);
-		jObj:setX(x);
-		y = clamp(0, ny, MAX_Y - h);
-		jObj:setY(y);
+		self:setX(nx);
+		self:setY(ny);
 	end
 	-- }}}
 	function self:setParent(o) -- {{{
 		parent = o;
+	end
+	-- }}}
+	function self:setBorderColorRGBA(r, g, b, a) -- {{{
+		borderColor.r = r;
+		borderColor.g = g;
+		borderColor.b = b;
+		borderColor.a = a;
+	end
+	-- }}}
+	function self:setBorderColor(c) -- {{{
+		borderColor.r = c.r;
+		borderColor.g = c.g;
+		borderColor.b = c.b;
+		borderColor.a = c.a;
+	end
+	-- }}}
+	function self:setBackgroundColorRGBA(r, g, b, a) -- {{{
+		backgroundColor.r = r;
+		backgroundColor.g = g;
+		backgroundColor.b = b;
+		backgroundColor.a = a;
+	end
+	-- }}}
+	function self:setBackgroundColor(c) -- {{{
+		backgroundColor.r = c.r;
+		backgroundColor.g = c.g;
+		backgroundColor.b = c.b;
+		backgroundColor.a = c.a;
 	end
 	-- }}}
 	-- ------------------------------------------------
@@ -191,6 +264,24 @@ function UIO.BaseElement.new(px, py, pw, ph)
 	-- }}}
 	function self:getParent() -- {{{
 		return parent;
+	end
+	-- }}}
+	function self:getBorderColor() -- {{{
+		retVal = {}; -- make sure borderColor stays private
+		retVal.r = borderColor.r;
+		retVal.g = borderColor.g;
+		retVal.b = borderColor.b;
+		retVal.a = borderColor.a;
+		return retVal;
+	end
+	-- }}}
+	function self:getBackgroundColor() -- {{{
+		retVal = {}; -- make sure backgroundColor stays private
+		retVal.r = backgroundColor.r;
+		retVal.g = backgroundColor.g;
+		retVal.b = backgroundColor.b;
+		retVal.a = backgroundColor.a;
+		return retVal;
 	end
 	-- }}}
 
