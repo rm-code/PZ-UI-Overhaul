@@ -4,6 +4,7 @@ UIO.Button = {};
 
 function UIO.Button.new(x, y, w, h)
 	local self = UIO.BaseElement.new(x, y, w, h);
+
 	local tw = 0;
 	local th = 0;
 	local text = "Foo";

@@ -3,9 +3,10 @@ require 'uio/BaseElement'
 UIO.Draggable = {};
 
 function UIO.Draggable.new(x, y, w, h)
+	local self = UIO.BaseElement.new(x, y, w, h);
+
 	local isDragging = false;
 	local dragStart = { x = 0, y = 0 };
-	local self = UIO.BaseElement.new(x, y, w, h);
 
 	function self:onMouseDown(mX, mY) -- {{{
 		local parent = self:getParent();
