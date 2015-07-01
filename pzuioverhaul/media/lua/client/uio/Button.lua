@@ -1,30 +1,35 @@
 require 'uio/BaseElement'
+require 'uio/UIVariables'
 
 UIO.Button = {};
 
 function UIO.Button.new(x, y, w, h)
 	local self = UIO.BaseElement.new(x, y, w, h);
 
+	local textColor = UIVariables.Button.textColor;
+	local borderColor = UIVariables.Button.borderColor;
+	local backgroundColor = UIVariables.Button.backgroundColor;
+	local backgroundColorMouseDown = UIVariables.Button.backgroundColorMouseDown;
+	local backgroundColorMouseOver = UIVariables.Button.backgroundColorMouseOver;
+
 	local tw = 0;
 	local th = 0;
 	local text = "Foo";
 	local onClick = nil;
 	local arguments = nil;
-	local textColor = {r=1, g=1, b=1, a=1};
-	local mouseDownBackgroundColor = {r=0.15, g=0.15, b=0.15, a=1.0};
 	local isMouseDown = false;
 
 	function self:prerender() -- {{{
 		if self:isMouseOver() then
 			if isMouseDown then
-				self:drawRectangle('fill', 0, 0, w, h, mouseDownBackgroundColor);
+				self:drawRectangle('fill', 0, 0, w, h, backgroundColorMouseDown);
 			else
-				self:drawRectangle('fill', 0, 0, w, h, self:getMouseOverBackgroundColor());
+				self:drawRectangle('fill', 0, 0, w, h, backgroundColorMouseOver);
 			end
 		else
-			self:drawRectangle('fill', 0, 0, w, h, self:getBackgroundColor());
+			self:drawRectangle('fill', 0, 0, w, h, backgroundColor);
 		end
-		self:drawRectangle('line', 0, 0, w, h, self:getBorderColor());
+		self:drawRectangle('line', 0, 0, w, h, borderColor);
 	end
 	-- }}}
 	function self:render() -- {{{
@@ -70,8 +75,5 @@ function UIO.Button.new(x, y, w, h)
 	end
 	-- }}}
 
-	self:setBorderColorRGBA(0.7, 0.7, 0.7, 1);
-	self:setBackgroundColorRGBA(0, 0, 0, 1.0);
-	self:setMouseOverBackgroundColorRGBA(0.3, 0.3, 0.3, 1.0);
 	return self;
 end
