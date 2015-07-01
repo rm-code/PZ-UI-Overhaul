@@ -1,6 +1,6 @@
 -- TODO These MUST go elsewhere TODO
 -- These are hotfixes for missing functionality in Kahlua
-if table.pack == nil then 
+if table.pack == nil then
 	table.pack = function(...)
 		return { n = select("#", ...), ... }
 	end
