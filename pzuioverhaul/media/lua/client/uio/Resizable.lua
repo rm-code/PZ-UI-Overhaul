@@ -18,6 +18,11 @@ function UIO.Resizable.new(x, y, w, h)
 	end
 	-- }}}
 	function self:onMouseUp(mX, mY) -- {{{
+		if not isDragging then
+			local parent = self:getParent();
+			if not parent then return false end
+			return parent:onMouseUp(self:getX() + mX, self:getY() + mY);
+		end
 		isDragging = false;
 		return true;
 	end
@@ -30,9 +35,9 @@ function UIO.Resizable.new(x, y, w, h)
 	function self:onMouseMove(mX, mY) -- {{{
 		local parent = self:getParent();
 		if not parent then return false end
+		if not isDragging then return parent:onMouseMove(self:getX() + mX, self:getY() + mY) end
 		mX = getMouseX();
 		mY = getMouseY();
-		if not isDragging then return parent:onMouseMove(mX, mY) end
 
 		parent:resize(parent:getWidth() + (mX - dragStart.x), parent:getHeight() + (mY - dragStart.y), true, true, false, false);
 		dragStart.x = mX;
@@ -42,24 +47,24 @@ function UIO.Resizable.new(x, y, w, h)
 	function self:onMouseMoveOutside(mX, mY) -- {{{
 		local parent = self:getParent();
 		if not parent then return false end
+		if not isDragging then return false end
 		mX = getMouseX();
 		mY = getMouseY();
-		if not isDragging then return parent:onMouseMoveOutside(mX, mY) end
 
 		parent:resize(parent:getWidth() + (mX - dragStart.x), parent:getHeight() + (mY - dragStart.y), true, true, false, false);
 		dragStart.x = mX;
 		dragStart.y = mY;
+		return true;
 	end
 	-- }}}
 
 	function self:prerender() -- {{{
-		self:drawRectangle("fill", 0, 0, self:getWidth(), self:getHeight(), self:getBackgroundColor());
-		self:drawTextureScaled(titleBarBackground, 1, 1, self:getWidth() - 1, self:getHeight() - 2);
+		-- self:drawRectangle("fill", 0, 0, self:getWidth(), self:getHeight(), self:getBackgroundColor());
+		-- self:drawTextureScaled(titleBarBackground, 1, 1, self:getWidth() - 1, self:getHeight() - 2);
 		self:drawTextureScaled(resizeImage, self:getWidth()-9, self:getHeight()-9, 8, 8);
-		self:drawRectangle("line", 0, 0, self:getWidth(), self:getHeight(), self:getBorderColor());
+		-- self:drawRectangle("line", 0, 0, self:getWidth(), self:getHeight(), self:getBorderColor());
 	end
 	-- }}}
 
-	self:setAnchorBottom(true);
 	return self;
 end

@@ -115,60 +115,60 @@ function UIO.BaseElement.new(px, py, pw, ph)
 	end
 	-- }}}
 	function self:onMouseDown(mX, mY) -- {{{
-		if parent then return parent:onMouseDown(mX, mY) end
+		if parent then return parent:onMouseDown(x + mX, y + mY) end
 		return false;
 	end
 	-- }}}
 	function self:onMouseUp(mX, mY) -- {{{
-		if parent then return parent:onMouseUp(mX, mY) end
+		if parent then return parent:onMouseUp(x + mX, y + mY) end
 		return false;
 	end
 	-- }}}
 	function self:onMouseMove(mX, mY) -- {{{
 		mouseOver = true;
-		if parent then return parent:onMouseMove(mX, mY) end
+		if parent then return parent:onMouseMove(x + mX, y+ mY) end
 		return false;
 	end
 	-- }}}
 	function self:onRightMouseDown(mX, mY) -- {{{
-		if parent then return parent:onRightMouseDown(mX, mY) end
+		if parent then return parent:onRightMouseDown(x + mX, y+ mY) end
 		return false;
 	end
 	-- }}}
 	function self:onRightMouseUp(mX, mY) -- {{{
-		if parent then return parent:onRightMouseUp(mX, mY) end
+		if parent then return parent:onRightMouseUp(x + mX, y+ mY) end
 		return false;
 	end
 	-- }}}
 	function self:onMouseWheel(mW) -- {{{
-		if parent then return parent:onRightMouseWheel(mX, mY) end
+		if parent then return parent:onRightMouseWheel(x + mX, y+ mY) end
 		return false;
 	end
 	-- }}}
 	function self:onRightMouseUpOutside(mX, mY) -- {{{
-		if parent then return parent:onRightMouseUpOutside(mX, mY) end
+		if parent then return parent:onRightMouseUpOutside(x + mX, y+ mY) end
 		return false;
 	end
 	-- }}}
 	function self:onRightMouseDownOutside(mX, mY) -- {{{
-		if parent then return parent:onRightMouseDownOutside(mX, mY) end
+		if parent then return parent:onRightMouseDownOutside(x + mX, y+ mY) end
 		return false;
 	end
 	-- }}}
 	function self:onMouseUpOutside(mX, mY) -- {{{
-		if parent then return parent:onMouseUpOutside(mX, mY) end
+		if parent then return parent:onMouseUpOutside(x + mX, y+ mY) end
 		return false;
 	end
 	-- }}}
 	function self:onMouseDownOutside(mX, mY) -- {{{
-		if parent then return parent:onMouseDownOutside(mX, mY) end
+		if parent then return parent:onMouseDownOutside(x + mX, y+ mY) end
 		return false;
 	end
 	-- }}}
 	function self:onMouseMoveOutside(mX, mY) -- {{{
 		mouseOver = false;
-		if parent then return parent:onMouseMoveOutside(mX, mY) end
-		return false;
+		-- if parent then return parent:onMouseMoveOutside(x + mX, y+ mY) end
+		return true;
 	end
 	-- }}}
 	-- ------------------------------------------------

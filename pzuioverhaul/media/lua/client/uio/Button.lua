@@ -66,8 +66,11 @@ function UIO.Button.new(x, y, w, h)
 	end
 	-- }}}
 	function self:onMouseUpOutside(mX, mY) -- {{{
-		isMouseDown = false;
-		if parent then return parent:onMouseUpOutside(mX, mY) end
+		if isMouseDown then
+			isMouseDown = false;
+		else
+			if parent then return parent:onMouseUpOutside(self:getX() + mX, self:getY() + mY) end
+		end
 		return false;
 	end
 	-- }}}

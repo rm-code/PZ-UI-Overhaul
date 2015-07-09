@@ -5,8 +5,9 @@ require 'uio/Panel'
 require 'uio/Resizable'
 require 'uio/Titlebar'
 
-function callback(par1, par2, par3)
+function callback(par1, par2, par3, par4)
 	print("callback called with: "..tostring(par1)..", "..tostring(par2)..", "..tostring(par3));
+	getSpecificPlayer(par4):Say("DIE DIE DIE!");
 end
 
 local function pzuiodemo(player, context, items) -- {{{
@@ -21,10 +22,13 @@ local function pzuiodemo(player, context, items) -- {{{
 
 	local button = UIO.Button.new(20, 40, 40, 40);
 	button:setText("OK");
-	button:setOnClick(callback, getSpecificPlayer(0):getForname(), getSpecificPlayer(0):getSurname(), "DIEDIEDIE");
+	button:setOnClick(callback, getSpecificPlayer(player):getForname(), getSpecificPlayer(player):getSurname(), "DIEDIEDIE", player);
 	button:setAnchorTop(true);
 	button:setAnchorLeft(true);
 	panel:addChild(button);
+
+	local resizableButton = UIO.Resizable.new(button:getWidth()-10, button:getHeight()-10, 10, 10);
+	button:addChild(resizableButton);
 
 	local label = UIO.Button.new(140, 140, 40, 40);
 	label:setText("Label");
@@ -33,7 +37,7 @@ local function pzuiodemo(player, context, items) -- {{{
 	label:setAnchorBottom(true);
 	panel:addChild(label);
 
-	local resizable = UIO.Resizable.new(0, panel:getHeight()-10, 200, 10);
+	local resizable = UIO.Resizable.new(panel:getWidth()-10, panel:getHeight()-10, 10, 10);
 	panel:addChild(resizable);
 
 	panel:setMinH(30);

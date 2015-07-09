@@ -17,6 +17,11 @@ function UIO.Draggable.new(x, y, w, h)
 	end
 	-- }}}
 	function self:onMouseUp(mX, mY) -- {{{
+		if not isDragging then
+			local parent = self:getParent();
+			if not parent then return false end
+			return parent:onMouseUp(self:getX() + mX, self:getY() + mY);
+		end
 		isDragging = false;
 		return true;
 	end
@@ -24,9 +29,9 @@ function UIO.Draggable.new(x, y, w, h)
 	function self:onMouseMove(mX, mY) -- {{{
 		local parent = self:getParent();
 		if not parent then return false end
+		if not isDragging then return parent:onMouseMove(self:getX() + mX, self:getY() + mY) end
 		mX = getMouseX();
 		mY = getMouseY();
-		if not isDragging then return parent:onMouseMove(mX, mY) end
 
 		parent:setPosition(parent:getX() + (mX - dragStart.x), parent:getY() + (mY - dragStart.y));
 		dragStart.x = mX;
@@ -40,19 +45,21 @@ function UIO.Draggable.new(x, y, w, h)
 			isDragging = false;
 			return true;
 		end
-		return parent:onMouseUpOutside(mX, mY);
+		return parent:onMouseUpOutside(self:getX() + mX, self:getY() + mY);
 	end
 	-- }}}
 	function self:onMouseMoveOutside(mX, mY) -- {{{
 		local parent = self:getParent();
 		if not parent then return false end
+		if not isDragging then return false end
 		mX = getMouseX();
 		mY = getMouseY();
-		if not isDragging then return parent:onMouseMoveOutside(mX, mY) end
 
 		parent:setPosition(parent:getX() + (mX - dragStart.x), parent:getY() + (mY - dragStart.y));
 		dragStart.x = mX;
 		dragStart.y = mY;
+
+		return true;
 	end
 	-- }}}
 
