@@ -261,7 +261,6 @@ function UIO.BaseElement.new(px, py, pw, ph)
 			-- do nothing
 		else
 			if not (anchor.l or anchorLeft) and not (anchor.r or anchorRight) then
-				print("math.max("..MIN_W..", "..tostring(w*nW/oW)..") == "..tostring(math.max(MIN_W, w * nW / oW)));
 				jObj:setWidth(math.max(MIN_W, w * nW / oW));
 				w = jObj:getWidth();
 				jObj:setX(x * w / oW);
