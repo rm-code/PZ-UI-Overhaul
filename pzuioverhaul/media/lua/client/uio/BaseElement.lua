@@ -29,6 +29,8 @@ function UIO.BaseElement.new(px, py, pw, ph)
 	local borderColor = UIVariables.Base.borderColor;
 	local backgroundColor = UIVariables.Base.backgroundColor;
 	local backgroundColorMouseOver = UIVariables.Base.backgroundColor;
+
+	local anchor = {r=false, l=false, t=false, b=false};
 	local joyPadFocus = nil;
 	local mouseOver = false;
 
@@ -36,6 +38,8 @@ function UIO.BaseElement.new(px, py, pw, ph)
 	local MIN_Y = -1;
 	local MAX_X = -1; --getCore():getScreenWidth();
 	local MAX_Y = -1; --getCore():getScreenHeight();
+	local MIN_H = 1;
+	local MIN_W = 1;
 	local x = px;
 	local y = py;
 	local w = pw;
@@ -67,6 +71,7 @@ function UIO.BaseElement.new(px, py, pw, ph)
 	end
 	-- }}}
 	function self:drawText(text, x, y, color, font) -- {{{ draw text
+		color = color or self:getTextColor();
 		jObj:DrawText(font or UIFont.Small, text, x, y, color.r, color.g, color.b, color.a);
 	end
 	-- }}}
@@ -215,6 +220,20 @@ function UIO.BaseElement.new(px, py, pw, ph)
 		MAX_Y = my;
 	end
 	-- }}}
+	function self:setMinH(mh) -- {{{
+		MIN_H = mh;
+		if MIN_H > self:getHeight() then
+			self:setHeight(MIN_H);
+		end
+	end
+	-- }}}
+	function self:setMinW(mw) -- {{{
+		MIN_W = mw;
+		if MIN_W > self:getWidth() then
+			self:setWidth(MIN_W);
+		end
+	end
+	-- }}}
 	function self:setX(nx) -- {{{
 		if MIN_X > -1 and MAX_X > -1 then
 			x = clamp(MIN_X, nx, MAX_X - w);
@@ -233,16 +252,87 @@ function UIO.BaseElement.new(px, py, pw, ph)
 		jObj:setY(y);
 	end
 	-- }}}
+	function self:resize(nW, nH, anchorLeft, anchorTop, anchorRight, anchorBottom) -- {{{
+		local oX, oY, oW, oH = x, y, w, h;
+		nW = math.max(MIN_W, nW);
+		nH = math.max(MIN_H, nH);
+
+		if (anchor.l or anchorLeft) and (anchor.r or anchorRight) then
+			-- do nothing
+		else
+			if not (anchor.l or anchorLeft) and not (anchor.r or anchorRight) then
+				print("math.max("..MIN_W..", "..tostring(w*nW/oW)..") == "..tostring(math.max(MIN_W, w * nW / oW)));
+				jObj:setWidth(math.max(MIN_W, w * nW / oW));
+				w = jObj:getWidth();
+				jObj:setX(x * w / oW);
+				x = jObj:getX();
+			else
+				if (anchor.l or anchorLeft) then
+					jObj:setWidth(math.max(MIN_W, nW));
+					w = nW;
+				else
+					if (anchor.r or anchorRight) then
+						local oldParentWidth = self:getParent():getWidth();
+						oldParentWidth = oldParentWidth / (nW / oW);
+						local oldOffset = oldParentWidth - oX;
+						self:setX(self:getParent():getWidth() - oldOffset);
+					end
+				end
+			end
+		end
+
+		if (anchor.t or anchorTop) and (anchor.b or anchorBottom) then
+			-- do nothing
+		else
+			if not (anchor.t or anchorTop) and not (anchor.b or anchorBottom) then
+				jObj:setHeight(math.max(MIN_H, h * nH / oH));
+				h = jObj:getHeight();
+				jObj:setY(y * h / oH);
+				y = jObj:getY();
+			else
+				if (anchor.t or anchorTop) then
+					jObj:setHeight(math.max(MIN_H, nH));
+					h = nH;
+				else
+					if (anchor.b or anchorBottom) then
+						local oldParentHeight = self:getParent():getHeight();
+						oldParentHeight = oldParentHeight / (nH / oH);
+						local oldOffset = oldParentHeight - oY;
+						self:setY(self:getParent():getHeight() - oldOffset);
+					end
+				end
+			end
+		end
+
+		for _,o in pairs(children) do
+			o:resize(o:getWidth() * (w / oW), o:getHeight() * (h / oH));
+		end
+	end
+	-- }}}
 	function self:setWidth(nw) -- {{{
+		nw = math.max(nw, MIN_W);
+		local oldWidth = w;
 		w = nw;
 		jObj:setWidth(w);
 		self:setX(x);
+
+		for _,o in pairs(children) do
+			o:setWidth(o:getWidth() * w / oldWidth);
+			o:setX(o:getX() * w / oldWidth);
+		end
 	end
 	-- }}}
 	function self:setHeight(nh) -- {{{
+		nh = math.max(nh, MIN_H);
+		local oldHeight = h;
 		h = nh;
 		jObj:setHeight(h);
 		self:setY(y);
+
+		for _,o in pairs(children) do
+			o:setHeight(o:getHeight() * h / oldHeight);
+			o:setY(o:getY() * h / oldHeight);
+		end
 	end
 	-- }}}
 	function self:setPosition(nx, ny) -- {{{
@@ -252,6 +342,20 @@ function UIO.BaseElement.new(px, py, pw, ph)
 	-- }}}
 	function self:setParent(o) -- {{{
 		parent = o;
+	end
+	-- }}}
+	function self:setTextColorRGBA(r, g, b, a) -- {{{
+		textColor.r = r;
+		textColor.g = g;
+		textColor.b = b;
+		textColor.a = a;
+	end
+	-- }}}
+	function self:setTextColor(c) -- {{{
+		textColor.r = c.r;
+		textColor.g = c.g;
+		textColor.b = c.b;
+		textColor.a = c.a;
 	end
 	-- }}}
 	function self:setBorderColorRGBA(r, g, b, a) -- {{{
@@ -296,6 +400,22 @@ function UIO.BaseElement.new(px, py, pw, ph)
 		backgroundColorMouseOver.a = c.a;
 	end
 	-- }}}
+	function self:setAnchorBottom(bAnchor) -- {{{
+		anchor.b = bAnchor;
+	end
+	-- }}}
+	function self:setAnchorTop(bAnchor) -- {{{
+		anchor.t = bAnchor;
+	end
+	-- }}}
+	function self:setAnchorLeft(bAnchor) -- {{{
+		anchor.l = bAnchor;
+	end
+	-- }}}
+	function self:setAnchorRight(bAnchor) -- {{{
+		anchor.r = bAnchor;
+	end
+	-- }}}
 	-- ------------------------------------------------
 	-- Getters
 	-- ------------------------------------------------
@@ -329,6 +449,15 @@ function UIO.BaseElement.new(px, py, pw, ph)
 	-- }}}
 	function self:getParent() -- {{{
 		return parent;
+	end
+	-- }}}
+	function self:getTextColor() -- {{{
+		retVal = {}; -- make sure textColor stays private
+		retVal.r = textColor.r;
+		retVal.g = textColor.g;
+		retVal.b = textColor.b;
+		retVal.a = textColor.a;
+		return retVal;
 	end
 	-- }}}
 	function self:getBorderColor() -- {{{

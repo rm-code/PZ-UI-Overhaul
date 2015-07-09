@@ -6,34 +6,31 @@ UIO.Button = {};
 function UIO.Button.new(x, y, w, h)
 	local self = UIO.BaseElement.new(x, y, w, h);
 
-	local textColor = UIVariables.Button.textColor;
-	local borderColor = UIVariables.Button.borderColor;
-	local backgroundColor = UIVariables.Button.backgroundColor;
-	local backgroundColorMouseDown = UIVariables.Button.backgroundColorMouseDown;
-	local backgroundColorMouseOver = UIVariables.Button.backgroundColorMouseOver;
-
 	local tw = 0;
 	local th = 0;
 	local text = "Foo";
 	local onClick = nil;
 	local arguments = nil;
 	local isMouseDown = false;
+	local backgroundColorMouseDown = UIVariables.Button.backgroundColorMouseDown;
 
 	function self:prerender() -- {{{
-		if self:isMouseOver() and onClick ~= nil then
-			if isMouseDown then
-				self:drawRectangle('fill', 0, 0, w, h, backgroundColorMouseDown);
+		if onClick ~= nil then
+			if self:isMouseOver() then
+				if isMouseDown then
+					self:drawRectangle('fill', 0, 0, self:getWidth(), self:getHeight(), backgroundColorMouseDown);
+				else
+					self:drawRectangle('fill', 0, 0, self:getWidth(), self:getHeight(), self:getMouseOverBackgroundColor());
+				end
 			else
-				self:drawRectangle('fill', 0, 0, w, h, backgroundColorMouseOver);
+				self:drawRectangle('fill', 0, 0, self:getWidth(), self:getHeight(), self:getBackgroundColor());
 			end
-		else
-			self:drawRectangle('fill', 0, 0, w, h, backgroundColor);
 		end
-		self:drawRectangle('line', 0, 0, w, h, borderColor);
+		self:drawRectangle('line', 0, 0, self:getWidth(), self:getHeight(), self:getBorderColor());
 	end
 	-- }}}
 	function self:render() -- {{{
-		self:drawText(text, (self:getWidth() - tw) / 2, (self:getHeight() - th) / 2, textColor);
+		self:drawText(text, (self:getWidth() - tw) / 2, (self:getHeight() - th) / 2);
 	end
 	-- }}}
 
@@ -74,6 +71,11 @@ function UIO.Button.new(x, y, w, h)
 		return false;
 	end
 	-- }}}
+
+	self:setTextColor(UIVariables.Button.textColor);
+	self:setBorderColor(UIVariables.Button.borderColor);
+	self:setBackgroundColor(UIVariables.Button.backgroundColor);
+	self:setMouseOverBackgroundColor(UIVariables.Button.backgroundColorMouseOver);
 
 	return self;
 end

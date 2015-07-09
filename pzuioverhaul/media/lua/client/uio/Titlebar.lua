@@ -27,5 +27,7 @@ function UIO.Titlebar.new(x, y, w, h)
 		self:drawTextCentered(title, self:getWidth() / 2, 1, textColor);
 	end
 
+	self:setAnchorTop(true);
+	self:setAnchorBottom(true);
 	return self;
 end
