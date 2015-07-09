@@ -20,7 +20,7 @@ function UIO.Button.new(x, y, w, h)
 	local isMouseDown = false;
 
 	function self:prerender() -- {{{
-		if self:isMouseOver() then
+		if self:isMouseOver() and onClick ~= nil then
 			if isMouseDown then
 				self:drawRectangle('fill', 0, 0, w, h, backgroundColorMouseDown);
 			else
