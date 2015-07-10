@@ -19,15 +19,16 @@ function UIO.Resizable.new(x, y, w, h)
 	-- }}}
 	function self:onMouseUp(mX, mY) -- {{{
 		if not isDragging then
-			local parent = self:getParent();
-			if not parent then return false end
-			return parent:onMouseUp(self:getX() + mX, self:getY() + mY);
+			return false;
 		end
 		isDragging = false;
 		return true;
 	end
 	-- }}}
 	function self:onMouseUpOutside(mX, mY) -- {{{
+		if not isDragging then
+			return false;
+		end
 		isDragging = false;
 		return true;
 	end
@@ -35,7 +36,7 @@ function UIO.Resizable.new(x, y, w, h)
 	function self:onMouseMove(mX, mY) -- {{{
 		local parent = self:getParent();
 		if not parent then return false end
-		if not isDragging then return parent:onMouseMove(self:getX() + mX, self:getY() + mY) end
+		if not isDragging then return false end
 		mX = getMouseX();
 		mY = getMouseY();
 

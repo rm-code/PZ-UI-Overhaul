@@ -50,26 +50,27 @@ function UIO.Button.new(x, y, w, h)
 	-- }}}
 	function self:onMouseUp(mX, mY) -- {{{
 		local doCb = isMouseDown and self:isMouseOver();
-		isMouseDown = false;
 
-		if doCb then
-			if onClick then
-				onClick(table.unpack(arguments));
-			end
+		if doCb and onClick then
+			isMouseDown = false;
+			onClick(table.unpack(arguments));
+			return true;
 		end
-		return true;
+		return false;
 	end
 	-- }}}
 	function self:onMouseDown(mX, mY) -- {{{
-		isMouseDown = true;
-		return true;
+		if onClick then
+			isMouseDown = true;
+			return true;
+		end
+		return false;
 	end
 	-- }}}
 	function self:onMouseUpOutside(mX, mY) -- {{{
 		if isMouseDown then
 			isMouseDown = false;
-		else
-			if parent then return parent:onMouseUpOutside(self:getX() + mX, self:getY() + mY) end
+			return true;
 		end
 		return false;
 	end

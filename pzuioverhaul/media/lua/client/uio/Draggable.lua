@@ -18,9 +18,7 @@ function UIO.Draggable.new(x, y, w, h)
 	-- }}}
 	function self:onMouseUp(mX, mY) -- {{{
 		if not isDragging then
-			local parent = self:getParent();
-			if not parent then return false end
-			return parent:onMouseUp(self:getX() + mX, self:getY() + mY);
+			return false;
 		end
 		isDragging = false;
 		return true;
@@ -45,7 +43,7 @@ function UIO.Draggable.new(x, y, w, h)
 			isDragging = false;
 			return true;
 		end
-		return parent:onMouseUpOutside(self:getX() + mX, self:getY() + mY);
+		return false;
 	end
 	-- }}}
 	function self:onMouseMoveOutside(mX, mY) -- {{{
