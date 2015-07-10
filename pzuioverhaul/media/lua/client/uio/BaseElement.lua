@@ -29,10 +29,10 @@ function UIO.BaseElement.new(px, py, pw, ph)
 	local borderColor = UIVariables.Base.borderColor;
 	local backgroundColor = UIVariables.Base.backgroundColor;
 	local backgroundColorMouseOver = UIVariables.Base.backgroundColor;
+	local backgroundColorMouseDown = UIVariables.Base.backgroundColorMouseDown;
 
 	local anchor = {r=false, l=false, t=false, b=false};
 	local joyPadFocus = nil;
-	local mouseOver = false;
 
 	local MIN_X = -1;
 	local MIN_Y = -1;
@@ -328,14 +328,28 @@ function UIO.BaseElement.new(px, py, pw, ph)
 		backgroundColor.a = c.a;
 	end
 	-- }}}
-	function self:setMouseOverBackgroundColorRGBA(r, g, b, a) -- {{{
+	function self:setBackgroundColorMouseDownRGBA(r, g, b, a) -- {{{
+		backgroundColorMouseDown.r = r;
+		backgroundColorMouseDown.g = g;
+		backgroundColorMouseDown.b = b;
+		backgroundColorMouseDown.a = a;
+	end
+	-- }}}
+	function self:setBackgroundColorMouseDown(c) -- {{{
+		backgroundColorMouseDown.r = c.r;
+		backgroundColorMouseDown.g = c.g;
+		backgroundColorMouseDown.b = c.b;
+		backgroundColorMouseDown.a = c.a;
+	end
+	-- }}}
+	function self:setBackgroundColorMouseOverRGBA(r, g, b, a) -- {{{
 		backgroundColorMouseOver.r = r;
 		backgroundColorMouseOver.g = g;
 		backgroundColorMouseOver.b = b;
 		backgroundColorMouseOver.a = a;
 	end
 	-- }}}
-	function self:setMouseOverBackgroundColor(c) -- {{{
+	function self:setBackgroundColorMouseOver(c) -- {{{
 		backgroundColorMouseOver.r = c.r;
 		backgroundColorMouseOver.g = c.g;
 		backgroundColorMouseOver.b = c.b;
@@ -420,7 +434,7 @@ function UIO.BaseElement.new(px, py, pw, ph)
 		return retVal;
 	end
 	-- }}}
-	function self:getMouseOverBackgroundColor() -- {{{
+	function self:getBackgroundColorMouseOver() -- {{{
 		retVal = {}; -- make sure backgroundColor stays private
 		retVal.r = backgroundColorMouseOver.r;
 		retVal.g = backgroundColorMouseOver.g;
@@ -429,8 +443,13 @@ function UIO.BaseElement.new(px, py, pw, ph)
 		return retVal;
 	end
 	-- }}}
-	function self:isMouseOver() -- {{{
-		return mouseOver;
+	function self:getBackgroundColorMouseDown() -- {{{
+		retVal = {}; -- make sure backgroundColor stays private
+		retVal.r = backgroundColorMouseDown.r;
+		retVal.g = backgroundColorMouseDown.g;
+		retVal.b = backgroundColorMouseDown.b;
+		retVal.a = backgroundColorMouseDown.a;
+		return retVal;
 	end
 	-- }}}
 

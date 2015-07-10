@@ -9,9 +9,10 @@ local greyF = { r = 0.1, g = 0.1, b = 0.1 };
 local black = { r = 0.0, g = 0.0, b = 0.0 };
 
 local Base = {};
-Base.textColor       = { r = white.r, g = white.g, b = white.b, a = 1.0 };
-Base.borderColor     = { r = greyD.r, g = greyD.g, b = greyD.b, a = 1.0 };
-Base.backgroundColor = { r = black.r, g = black.g, b = black.b, a = 0.8 };
+Base.textColor                = { r = white.r, g = white.g, b = white.b, a = 1.0 };
+Base.borderColor              = { r = greyD.r, g = greyD.g, b = greyD.b, a = 1.0 };
+Base.backgroundColor          = { r = black.r, g = black.g, b = black.b, a = 0.8 };
+Base.backgroundColorMouseDown = { r = black.r, g = black.g, b = black.b, a = 0.8 };
 
 local Button = {};
 Button.textColor                = Base.textColor;
